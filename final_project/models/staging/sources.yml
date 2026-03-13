@@ -1,0 +1,36 @@
+version: 2
+
+sources:
+  - name: fudgemart_v3
+    database: raw
+    schema: fudgemart_v3
+    tables:
+      - name: fm_customers
+      - name: fm_products
+      - name: fm_orders
+      - name: fm_order_details
+      - name: fm_customer_product_reviews
+      - name: fm_employees
+      - name: fm_employee_timesheets
+      - name: fm_vendors
+      - name: fm_departments_lookup
+      - name: fm_jobtitles_lookup
+      - name: fm_shipvia_lookup
+
+  - name: fudgeflix_v3
+    database: raw
+    schema: fudgeflix_v3
+    tables:
+      - name: ff_accounts
+      - name: ff_account_titles
+      - name: ff_account_billing
+      - name: ff_titles
+      - name: ff_plans
+      - name: ff_title_genres
+      - name: ff_zipcodes
+
+  - name: conformed
+    database: raw
+    schema: conformed
+    tables:
+      - name: datedimension

@@ -1,0 +1,128 @@
+version: 2
+
+models:
+  # ============================================================
+  # DIMENSIONS
+  # ============================================================
+  - name: dim_customer
+    description: "Merged customer dimension. FM customers (25) + FF accounts (35) → ~46 unique. 14 shared customers by email."
+    columns:
+      - name: CustomerKey
+        description: "Surrogate key"
+        tests:
+          - unique
+          - not_null
+      - name: Division
+        tests:
+          - accepted_values:
+              values: ['FudgeMart', 'FudgeFlix']
+
+  - name: dim_product
+    description: "Merged product dimension. FM products (53) + FF titles (7,185) → ~7,238."
+    columns:
+      - name: ProductKey
+        description: "Surrogate key"
+        tests:
+          - unique
+          - not_null
+      - name: ProductType
+        tests:
+          - accepted_values:
+              values: ['Physical Product', 'Digital Content']
+
+  - name: dim_employee
+    description: "FM employee dimension (33 rows). SSN excluded."
+    columns:
+      - name: EmployeeKey
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_plan
+    description: "FF subscription plan dimension (7 rows)."
+    columns:
+      - name: PlanKey
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_vendor
+    description: "FM vendor dimension (9 rows)."
+    columns:
+      - name: VendorKey
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_department
+    description: "FM department dimension (6 rows)."
+    columns:
+      - name: DepartmentKey
+        tests:
+          - unique
+          - not_null
+
+  # ============================================================
+  # FACTS
+  # ============================================================
+  - name: fact_customer_ratings
+    description: "★ MERGED fact table. Customer ratings from FM reviews + FF title ratings. Expected ~2,972 rows."
+    columns:
+      - name: CustomerKey
+        tests:
+          - not_null
+      - name: ProductKey
+        tests:
+          - not_null
+      - name: DateKey
+        tests:
+          - not_null
+      - name: RatingScore
+        description: "Star rating 0-5 (same scale both companies)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5]
+
+  - name: fact_sales_orders
+    description: "FM sales orders. One row per product line item. Expected ~10,466 rows."
+    columns:
+      - name: CustomerKey
+        tests:
+          - not_null
+      - name: OrderQty
+        tests:
+          - not_null
+
+  - name: fact_title_rentals
+    description: "FF title rentals. One row per title shipped. Expected ~2,368 rows."
+    columns:
+      - name: CustomerKey
+        tests:
+          - not_null
+      - name: BKRentalID
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_account_billing
+    description: "FF billing transactions. Expected ~1,294 rows."
+    columns:
+      - name: BKBillingID
+        tests:
+          - unique
+          - not_null
+      - name: BilledAmount
+        tests:
+          - not_null
+
+  - name: fact_employee_timesheets
+    description: "FM employee timesheets. Periodic snapshot. Expected ~6,275 rows."
+    columns:
+      - name: BKTimesheetID
+        tests:
+          - unique
+          - not_null
+      - name: LaborCost
+        tests:
+          - not_null
