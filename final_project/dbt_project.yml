@@ -15,7 +15,7 @@ models:
   fudgemart_dw:
     staging:
       +materialized: view
-      +schema: staging
+      # +schema: staging
     marts:
       +materialized: table
       +schema: fudgecompanies
